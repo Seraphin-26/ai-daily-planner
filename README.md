@@ -2,6 +2,9 @@
 
 A production-ready AI-powered daily planner built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion. Powered by Groq's `llama-3.3-70b-versatile` model.
 
+![CI](https://github.com/Seraphin-26/ai-daily-planner/actions/workflows/ci.yml/badge.svg)
+![Docker](https://img.shields.io/docker/v/seraphin26/ai-daily-planner?label=docker)
+
 ## Features
 
 - **AI plan generation** — enter tasks in plain text, get a structured, time-blocked schedule
