@@ -1,23 +1,16 @@
 name: CI — AI Daily Planner
 
-# ─── Déclencheurs ─────────────────────────────────────────────────────────────
 on:
   push:
-    branches: [main, develop]   # Lance le pipeline sur ces branches
+    branches: [main, develop]
   pull_request:
-    branches: [main]            # Lance aussi sur chaque Pull Request vers main
+    branches: [main]
 
-# ─── Jobs ─────────────────────────────────────────────────────────────────────
 jobs:
 
-  # ════════════════════════════════════════════════════════════════════════════
-  # JOB 1 — Qualité du code
-  # Vérifie les types TypeScript + ESLint
-  # ════════════════════════════════════════════════════════════════════════════
   quality:
     name: 🔍 Qualité du code
     runs-on: ubuntu-latest
-
     steps:
       - name: 📥 Récupérer le code
         uses: actions/checkout@v4
@@ -26,10 +19,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"           # Met en cache node_modules pour accélérer
+          cache: "npm"
 
       - name: 📦 Installer les dépendances
-        run: npm ci              # Utilise ci au lieu de install (plus rapide + reproductible)
+        run: npm ci
 
       - name: 🔷 Vérifier les types TypeScript
         run: npm run type-check
@@ -37,16 +30,10 @@ jobs:
       - name: 🧹 Vérifier ESLint
         run: npm run lint
 
-  # ════════════════════════════════════════════════════════════════════════════
-  # JOB 2 — Build de production
-  # S'assure que le build Next.js réussit
-  # Ne tourne que si le job "quality" a réussi
-  # ════════════════════════════════════════════════════════════════════════════
   build:
     name: 🏗️ Build de production
     runs-on: ubuntu-latest
-    needs: quality               # Attend que "quality" soit vert
-
+    needs: quality
     steps:
       - name: 📥 Récupérer le code
         uses: actions/checkout@v4
@@ -63,33 +50,72 @@ jobs:
       - name: 🔨 Build Next.js
         run: npm run build
         env:
-          # Variable factice pour que le build ne plante pas sans vraie clé API
-          # La vraie clé est configurée dans Vercel, pas ici
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
 
       - name: 📊 Afficher la taille du build
         run: |
-          echo "=== Taille du dossier .next ===" 
+          echo "=== Taille du dossier .next ==="
           du -sh .next
           echo "=== Routes générées ==="
           ls .next/server/app/
 
-  # ════════════════════════════════════════════════════════════════════════════
-  # JOB 3 — Notification de succès
-  # Résumé affiché dans GitHub après le pipeline
-  # ════════════════════════════════════════════════════════════════════════════
+  docker:
+    name: 🐳 Build & Push Docker
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: 📥 Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Configurer Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔐 Se connecter à Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 🏷️ Générer les tags de l'image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/ai-daily-planner
+          tags: |
+            type=raw,value=latest
+            type=sha,prefix=sha-,format=short
+
+      - name: 🐳 Build et push l'image Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            AI_API_KEY=${{ secrets.AI_API_KEY }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: ✅ Résumé Docker
+        run: |
+          echo "Image publiée :"
+          echo "${{ steps.meta.outputs.tags }}"
+
   success:
     name: ✅ Pipeline réussi
     runs-on: ubuntu-latest
-    needs: [quality, build]      # Attend que les deux jobs précédents soient verts
-
+    needs: [quality, build, docker]
+    if: always()
     steps:
       - name: 🎉 Résumé
         run: |
-          echo "╔══════════════════════════════════════╗"
-          echo "║   ✅  Pipeline CI réussi              ║"
-          echo "║   🔷  TypeScript    → OK              ║"
-          echo "║   🧹  ESLint        → OK              ║"
-          echo "║   🏗️  Build Next.js → OK              ║"
-          echo "║   🚀  Vercel déploie automatiquement  ║"
-          echo "╚══════════════════════════════════════╝"
+          echo "╔══════════════════════════════════════════╗"
+          echo "║   ✅  Pipeline CI/CD réussi               ║"
+          echo "║   🔷  TypeScript      → OK                ║"
+          echo "║   🧹  ESLint          → OK                ║"
+          echo "║   🏗️  Build Next.js   → OK                ║"
+          echo "║   🐳  Image Docker    → Docker Hub        ║"
+          echo "║   🚀  Vercel          → Déploiement auto  ║"
+          echo "╚══════════════════════════════════════════╝"

@@ -1,0 +1,21 @@
+# Dossiers générés — inutiles dans l'image
+node_modules
+.next
+.git
+
+# Fichiers d'environnement — ne jamais inclure les secrets dans une image
+.env
+.env.local
+.env.*.local
+
+# Fichiers de développement
+README.md
+.eslintrc.json
+.gitignore
+
+# Docker lui-même
+Dockerfile
+.dockerignore
+
+# CI/CD
+.github
