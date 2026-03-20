@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base resets ──────────────────────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-300 dark:bg-white/10;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-white/20;
+  }
+
+  /* Text selection */
+  ::selection {
+    @apply bg-indigo-100 text-indigo-900 dark:bg-indigo-500/30 dark:text-indigo-100;
+  }
+}
+
+/* ─── Utility classes ──────────────────────────────────────────────────────── */
+@layer utilities {
+  .glass {
+    @apply bg-white/70 dark:bg-white/[0.03] backdrop-blur-xl;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
