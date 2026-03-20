@@ -1,0 +1,95 @@
+name: CI — AI Daily Planner
+
+# ─── Déclencheurs ─────────────────────────────────────────────────────────────
+on:
+  push:
+    branches: [main, develop]   # Lance le pipeline sur ces branches
+  pull_request:
+    branches: [main]            # Lance aussi sur chaque Pull Request vers main
+
+# ─── Jobs ─────────────────────────────────────────────────────────────────────
+jobs:
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # JOB 1 — Qualité du code
+  # Vérifie les types TypeScript + ESLint
+  # ════════════════════════════════════════════════════════════════════════════
+  quality:
+    name: 🔍 Qualité du code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Installer Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"           # Met en cache node_modules pour accélérer
+
+      - name: 📦 Installer les dépendances
+        run: npm ci              # Utilise ci au lieu de install (plus rapide + reproductible)
+
+      - name: 🔷 Vérifier les types TypeScript
+        run: npm run type-check
+
+      - name: 🧹 Vérifier ESLint
+        run: npm run lint
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # JOB 2 — Build de production
+  # S'assure que le build Next.js réussit
+  # Ne tourne que si le job "quality" a réussi
+  # ════════════════════════════════════════════════════════════════════════════
+  build:
+    name: 🏗️ Build de production
+    runs-on: ubuntu-latest
+    needs: quality               # Attend que "quality" soit vert
+
+    steps:
+      - name: 📥 Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Installer Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: 📦 Installer les dépendances
+        run: npm ci
+
+      - name: 🔨 Build Next.js
+        run: npm run build
+        env:
+          # Variable factice pour que le build ne plante pas sans vraie clé API
+          # La vraie clé est configurée dans Vercel, pas ici
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+
+      - name: 📊 Afficher la taille du build
+        run: |
+          echo "=== Taille du dossier .next ===" 
+          du -sh .next
+          echo "=== Routes générées ==="
+          ls .next/server/app/
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # JOB 3 — Notification de succès
+  # Résumé affiché dans GitHub après le pipeline
+  # ════════════════════════════════════════════════════════════════════════════
+  success:
+    name: ✅ Pipeline réussi
+    runs-on: ubuntu-latest
+    needs: [quality, build]      # Attend que les deux jobs précédents soient verts
+
+    steps:
+      - name: 🎉 Résumé
+        run: |
+          echo "╔══════════════════════════════════════╗"
+          echo "║   ✅  Pipeline CI réussi              ║"
+          echo "║   🔷  TypeScript    → OK              ║"
+          echo "║   🧹  ESLint        → OK              ║"
+          echo "║   🏗️  Build Next.js → OK              ║"
+          echo "║   🚀  Vercel déploie automatiquement  ║"
+          echo "╚══════════════════════════════════════╝"
