@@ -6,6 +6,15 @@ A production-ready AI-powered daily planner built with Next.js 14, TypeScript, T
 
 ![CI](https://github.com/Seraphin-26/ai-daily-planner/actions/workflows/ci.yml/badge.svg)
 ![Docker](https://img.shields.io/docker/v/nariveloson/ai-daily-planner/latest?label=docker)
+## Screenshots
+
+### Desktop View
+![Desktop](screenshots/desktop.png)
+![Desktop](screenshots/desktop_1.png)
+### Mobile View
+![Mobile](screenshots/mobile.png)
+![Mobile](screenshots/mobile_1.png)
+
 
 ## Features
 
