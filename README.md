@@ -1,4 +1,9 @@
-# DayFlow — AI Daily Planner
+# AI Daily Planner
+
+🚀 **Live Demo:**  
+https://ai-task-jour.vercel.app/
+
+An AI-powered daily planning application built with Next.js, TypeScript, and Tailwind CSS.
 
 A production-ready AI-powered daily planner built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion. Powered by Groq's `llama-3.3-70b-versatile` model.
 
