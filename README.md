@@ -1,12 +1,17 @@
 # AI Daily Planner
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue)
-![Tailwind](https://img.shields.io/badge/Tailwind-v3-38B2AC)
-![License](https://img.shields.io/badge/license-MIT-green)
-
-[![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge)](https://ai-task-jour.vercel.app/)
 
 A production-ready AI-powered daily planner built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion. Powered by Groq's `llama-3.3-70b-versatile` model.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge)](https://ai-task-jour.vercel.app/)
+
+
+![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.9-blue?style=for-the-badge&logo=typescript)
+![Grok AI](https://img.shields.io/badge/Grok-AI-FF6F61?style=for-the-badge)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v3-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-Animation-pink?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-Container-0db7ed?style=for-the-badge&logo=docker)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-2088ff?style=for-the-badge&logo=githubactions)
+
 
 ![CI](https://github.com/Seraphin-26/ai-daily-planner/actions/workflows/ci.yml/badge.svg)
 ![Docker](https://img.shields.io/docker/v/nariveloson/ai-daily-planner/latest?label=docker)
