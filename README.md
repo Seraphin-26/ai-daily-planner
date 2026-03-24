@@ -1,6 +1,7 @@
 # AI Daily Planner
 
 A production-ready AI-powered daily planner built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion. Powered by Groq's `llama-3.3-70b-versatile` model.
+
 [![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge)](https://ai-task-jour.vercel.app/)
 
 
