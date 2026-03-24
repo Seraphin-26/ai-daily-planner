@@ -1,4 +1,8 @@
 # AI Daily Planner
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue)
+![Tailwind](https://img.shields.io/badge/Tailwind-v3-38B2AC)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge)](https://ai-task-jour.vercel.app/)
 
